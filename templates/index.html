@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Auto Update</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            margin-top: 40px;
+            text-align: center;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .loading {
+            background-color: #d9edf7;
+            color: #31708f;
+        }
+        pre {
+            white-space: pre-wrap;
+            text-align: left;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>GitHub Auto Update</h1>
+    
+    <div class="container">
+        <button id="updateBtn" class="btn" onclick="updateFromGitHub()">Update from GitHub</button>
+        
+        <div id="status" style="display: none;"></div>
+    </div>
+
+    <script>
+        function updateFromGitHub() {
+            const button = document.getElementById('updateBtn');
+            const statusDiv = document.getElementById('status');
+            
+            // Disable the button and show loading message
+            button.disabled = true;
+            statusDiv.className = 'loading';
+            statusDiv.innerHTML = 'Updating from GitHub...';
+            statusDiv.style.display = 'block';
+            
+            // Make the AJAX request
+            fetch('/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    statusDiv.className = 'success';
+                    statusDiv.innerHTML = '<strong>Success!</strong><pre>' + data.message + '</pre>';
+                } else {
+                    statusDiv.className = 'error';
+                    statusDiv.innerHTML = '<strong>Error:</strong><pre>' + data.message + '</pre>';
+                }
+                button.disabled = false;
+            })
+            .catch(error => {
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = '<strong>Error:</strong><pre>' + error + '</pre>';
+                button.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
