@@ -95,7 +95,14 @@
             .then(data => {
                 if (data.status === 'success') {
                     statusDiv.className = 'success';
-                    statusDiv.innerHTML = '<strong>Success!</strong><pre>' + data.message + '</pre>';
+                    let message = '<strong>Success!</strong>';
+                    
+                    if (data.requirements_updated) {
+                        message += '<p><span class="badge">✓</span> Dependencies updated</p>';
+                    }
+                    
+                    message += '<pre>' + data.message + '</pre>';
+                    statusDiv.innerHTML = message;
                 } else {
                     statusDiv.className = 'error';
                     statusDiv.innerHTML = '<strong>Error:</strong><pre>' + data.message + '</pre>';
