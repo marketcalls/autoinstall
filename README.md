@@ -37,3 +37,7 @@ Simply click the "Update from GitHub" button on the web page. The application wi
 - Pull the latest changes if the repository exists
 
 The status and results of the operation will be displayed on the page.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
