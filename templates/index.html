@@ -54,6 +54,29 @@
             background-color: #d9edf7;
             color: #31708f;
         }
+        .version-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #007bff;
+        }
+        .badge {
+            background-color: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+        .update-badge {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .version-text {
+            font-weight: bold;
+            color: #495057;
+        }
         pre {
             white-space: pre-wrap;
             text-align: left;
@@ -65,7 +88,12 @@
     </style>
 </head>
 <body>
-    <h1>GitHub Auto Update</h1>
+    <h1>GitHub Auto Update for Begineers</h1>
+    
+    <div class="version-info">
+        <div class="version-text">Current Version: <span id="currentVersion">{{ current_version }}</span></div>
+        <div id="versionStatus" style="margin-top: 8px;"></div>
+    </div>
     
     <div class="container">
         <button id="updateBtn" class="btn" onclick="updateFromGitHub()">Update from GitHub</button>
@@ -74,6 +102,27 @@
     </div>
 
     <script>
+        // Check for version updates on page load
+        window.onload = function() {
+            checkVersion();
+        }
+        
+        function checkVersion() {
+            fetch('/version')
+            .then(response => response.json())
+            .then(data => {
+                const versionStatus = document.getElementById('versionStatus');
+                if (data.update_available) {
+                    versionStatus.innerHTML = '<span class="badge update-badge">🚀</span>New version available: ' + data.remote_version;
+                } else {
+                    versionStatus.innerHTML = '<span class="badge">✅</span>Up to date';
+                }
+            })
+            .catch(error => {
+                console.log('Version check failed:', error);
+            });
+        }
+        
         function updateFromGitHub() {
             const button = document.getElementById('updateBtn');
             const statusDiv = document.getElementById('status');
@@ -96,6 +145,14 @@
                 if (data.status === 'success') {
                     statusDiv.className = 'success';
                     let message = '<strong>Success!</strong>';
+                    
+                    if (data.version_updated) {
+                        message += '<p><span class="badge">🚀</span> Version updated to ' + data.remote_version + '</p>';
+                        // Update the current version display
+                        document.getElementById('currentVersion').textContent = data.remote_version;
+                        // Refresh version status
+                        setTimeout(checkVersion, 1000);
+                    }
                     
                     if (data.requirements_updated) {
                         message += '<p><span class="badge">✓</span> Dependencies updated</p>';

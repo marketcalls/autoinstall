@@ -5,8 +5,10 @@ A simple Flask web application with a button to automatically update code from G
 ## Features
 
 - One-click GitHub repository update/clone
-- Visual feedback on update status
-- Simple and clean UI
+- Automatic version checking and upgrade
+- Automatic dependency installation from requirements.txt
+- Visual feedback on update status with version notifications
+- Simple and clean UI with version display
 
 ## Setup
 
